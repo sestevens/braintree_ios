@@ -36,13 +36,13 @@ typedef NS_ENUM(NSInteger, BTPayPalUATEnvironment) {
     BTPayPalUATEnvironmentStage = 0,
 
     /// Sandbox
-    BTPayPalUATEnvironmentSand = 1,
+    BTPayPalUATEnvironmentSand,
 
     /// Production
-    BTPayPalUATEnvironmentProd = 2,
+    BTPayPalUATEnvironmentProd,
 
     /// Unknown
-    BTPayPalUATEnvironmentUnknown = 3,
+    BTPayPalUATEnvironmentUnknown,
 };
 
 /**
