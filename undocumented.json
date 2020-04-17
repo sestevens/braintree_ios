@@ -1,0 +1,40 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/scannillo/bt/braintree-ios/BraintreeCore/Public/BTPayPalUAT.h",
+      "line": 5,
+      "symbol": "BTPayPalUAT",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/scannillo/bt/braintree-ios/BraintreeCore/Public/BTPayPalUAT.h",
+      "line": 12,
+      "symbol": "BTPayPalUAT.-init",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/scannillo/bt/braintree-ios/BraintreeCore/Public/BTURLUtils.h",
+      "line": 5,
+      "symbol": "BTURLUtils",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/scannillo/bt/braintree-ios/BraintreeCore/Public/BTURLUtils.h",
+      "line": 7,
+      "symbol": "BTURLUtils.+queryStringWithDictionary:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/scannillo/bt/braintree-ios/BraintreeCore/Public/BTURLUtils.h",
+      "line": 8,
+      "symbol": "BTURLUtils.+queryParametersForURL:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/scannillo/bt/braintree-ios"
+}
