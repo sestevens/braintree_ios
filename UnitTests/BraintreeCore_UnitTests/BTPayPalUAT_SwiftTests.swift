@@ -26,41 +26,10 @@ class BTPayPalUAT_Tests: XCTestCase {
         let payPalUAT = try? BTPayPalUAT(uatString: uatString)
         XCTAssertNotNil(payPalUAT)
         XCTAssertEqual(payPalUAT?.token, uatString)
-        XCTAssertEqual(payPalUAT?.environment, .prod)
         XCTAssertEqual(payPalUAT?.configURL, URL(string: "https://some-braintree-url.com/merchants/fake-bt-merchant/client_api/v1/configuration"))
         XCTAssertEqual(payPalUAT?.basePayPalURL, URL(string: "https://api.paypal.com"))
         XCTAssertEqual(payPalUAT?.baseBraintreeURL, URL(string: "https://some-braintree-url.com/merchants/fake-bt-merchant/client_api"))
     }
-
-    // MARK: - "iss" field properly indicates env
-
-    func testInitWithUATString_whenUATContainsStagingISS_setsEnvironment() {
-        let dict: [String : Any] = [
-            "iss": "https://api.msmaster.qa.paypal.com",
-            "external_ids": [
-                "Braintree:merchant"
-            ]
-        ]
-        let uatString = BTPayPalUATTestHelper.encodeUAT(dict)
-        let payPalUAT = try? BTPayPalUAT(uatString: uatString)
-
-        XCTAssertEqual(payPalUAT?.environment, .stage)
-    }
-
-    func testInitWithUATString_whenUATContainsSandboxISS_setsEnvironment() {
-        let dict: [String : Any] = [
-            "iss": "https://api.sandbox.paypal.com",
-            "external_ids": [
-                "Braintree:merchant"
-            ]
-        ]
-        let uatString = BTPayPalUATTestHelper.encodeUAT(dict)
-        let payPalUAT = try? BTPayPalUAT(uatString: uatString)
-
-        XCTAssertEqual(payPalUAT?.environment, .sand)
-    }
-
-    // MARK: - padding required for base 64 decoding
 
     func testInitWithUATString_whenZeroPaddingCharactersAreRequired_createsUAT() {
         let uatString = "123.ewogICAiaXNzIjoiaHR0cHM6Ly9hcGkucGF5cGFsLmNvbSIsCiAgICJzdWIiOiJQYXlQYWw6ZmFrZS1wcC1tZXJjaGFudCIsCiAgICJhY3IiOlsKICAgICAgImNsaWVudCIKICAgXSwKICAgInNjb3BlcyI6WwogICAgICAiQnJhaW50cmVlOlZhdWx0IgogICBdLAogICAiZXhwIjoxNTcxOTgwNTA2LAogICAiZXh0ZXJuYWxfaWRzIjpbCiAgICAgICJQYXlQYWw6ZmFrZS1wcC1tZXJjaGFudCIsCiAgICAgICJCcmFpbnRyZWU6ZmFrZS1idC1tZXJjaGFudCIKICAgXSwKICAgImp0aSI6ImZha2UtanRpIgp9.456"
@@ -85,8 +54,6 @@ class BTPayPalUAT_Tests: XCTestCase {
         XCTAssertNotNil(payPalUAT)
         XCTAssertEqual(payPalUAT?.token, uatString)
     }
-
-    // MARK: - error scenarios
 
     func testInitWithUATString_whenUATStringIsMalformed_throwsError() {
         let uatString = "malformed-uat"
@@ -141,23 +108,6 @@ class BTPayPalUAT_Tests: XCTestCase {
             XCTFail()
         } catch {
             XCTAssertEqual(error.localizedDescription, "Invalid PayPal UAT: Associated Braintree merchant ID missing.")
-        }
-    }
-
-    func testInitWithUATString_whenJSONContainsUnknownIssuer_throwsError() {
-        let dict: [String : Any] = [
-            "iss": "www.im-a-fraud.com",
-            "external_ids": [
-                "Braintree:fake-bt-merchant"
-            ]
-        ]
-        let uatString = BTPayPalUATTestHelper.encodeUAT(dict)
-
-        do {
-            let _ = try BTPayPalUAT(uatString: uatString)
-            XCTFail()
-        } catch {
-            XCTAssertEqual(error.localizedDescription, "Invalid PayPal UAT: Issuer missing or unknown.")
         }
     }
 

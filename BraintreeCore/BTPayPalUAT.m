@@ -39,25 +39,22 @@ NSString * const BTPayPalUATErrorDomain = @"com.braintreepayments.BTPayPalUATErr
         NSString *basePayPalURL = [json[@"iss"] asString];
         
         NSString *braintreeGatewayURL;
-
-        _environment = [self environmentType:basePayPalURL];
-
+        
         // TODO: - get the braintree URL from the PP UAT instead of hardcoding; waiting for PP UAT to include BT endpoint
-        switch(_environment){
-            case BTPayPalUATEnvironmentProd:
-                braintreeGatewayURL = @"https://api.braintreegateway.com:443";
-                break;
-            case BTPayPalUATEnvironmentSand:
-            case BTPayPalUATEnvironmentStage:
-                braintreeGatewayURL = @"https://api.sandbox.braintreegateway.com:443";
-                break;
-            case BTPayPalUATEnvironmentUnknown :
-                if (error) {
-                    *error = [NSError errorWithDomain:BTPayPalUATErrorDomain
-                                                 code:BTPayPalUATErrorInvalid
-                                             userInfo:@{NSLocalizedDescriptionKey:@"Invalid PayPal UAT: Issuer missing or unknown."}];
-                }
-                return nil;
+        if ([basePayPalURL isEqualToString:@"https://api.paypal.com"] ) {
+            braintreeGatewayURL = @"https://api.braintreegateway.com:443";
+        } else if ([basePayPalURL isEqualToString:@"https://api.msmaster.qa.paypal.com"]
+                   || [basePayPalURL isEqualToString:@"https://api.sandbox.paypal.com"]) {
+            braintreeGatewayURL = @"https://api.sandbox.braintreegateway.com:443";
+        }
+
+        if (!basePayPalURL || !braintreeGatewayURL) {
+            if (error) {
+                *error = [NSError errorWithDomain:BTPayPalUATErrorDomain
+                                             code:BTPayPalUATErrorInvalid
+                                         userInfo:@{NSLocalizedDescriptionKey:@"Invalid PayPal UAT: Issuer missing or unknown."}];
+            }
+            return nil;
         }
         
         _basePayPalURL = [NSURL URLWithString:basePayPalURL];
@@ -125,18 +122,6 @@ NSString * const BTPayPalUATErrorDomain = @"com.braintreepayments.BTPayPalUATErr
         return [NSString stringWithFormat:@"%@=", base64EncodedString];
     } else {
         return base64EncodedString;
-    }
-}
-
-- (BTPayPalUATEnvironment)environmentType:(NSString *)payPalURL {
-    if ([payPalURL isEqualToString:@"https://api.paypal.com"] ) {
-        return BTPayPalUATEnvironmentProd;
-    } else if ([payPalURL isEqualToString:@"https://api.msmaster.qa.paypal.com"]) {
-        return BTPayPalUATEnvironmentSand;
-    } else if ([payPalURL isEqualToString:@"https://api.sandbox.paypal.com"]) {
-        return BTPayPalUATEnvironmentStage;
-    } else {
-        return BTPayPalUATEnvironmentUnknown;
     }
 }
 
