@@ -31,6 +31,25 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, strong) NSURL *basePayPalURL;
 
+typedef NS_ENUM(NSInteger, BTPayPalUATEnvironment) {
+    /// Staging
+    BTPayPalUATEnvironmentStage = 0,
+
+    /// Sandbox
+    BTPayPalUATEnvironmentSand = 1,
+
+    /// Production
+    BTPayPalUATEnvironmentProd = 2,
+
+    /// Unknown
+    BTPayPalUATEnvironmentUnknown = 3,
+};
+
+/**
+ The environment context of the provided PayPal UAT
+ */
+@property (nonatomic, readonly, assign) BTPayPalUATEnvironment environment;
+
 /**
  Error codes associated with a PayPal UAT.
  */
