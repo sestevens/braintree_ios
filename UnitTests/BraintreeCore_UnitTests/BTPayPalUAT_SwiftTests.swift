@@ -2,11 +2,9 @@ import XCTest
 
 class BTPayPalUAT_Tests: XCTestCase {
 
-    // TODO: - make sure this passes once PP UAT returns PayPal and Braintree URLs for each environment
     func testInitWithUATString_setsAllProperties() {
         let dict: [String : Any] = [
             "iss": "https://api.paypal.com",
-            "braintreeURL": "https://some-braintree-url.com",
             "sub": "PayPal:fake-pp-merchant",
             "acr": [
                 "client"
@@ -27,9 +25,9 @@ class BTPayPalUAT_Tests: XCTestCase {
         XCTAssertNotNil(payPalUAT)
         XCTAssertEqual(payPalUAT?.token, uatString)
         XCTAssertEqual(payPalUAT?.environment, .prod)
-        XCTAssertEqual(payPalUAT?.configURL, URL(string: "https://some-braintree-url.com/merchants/fake-bt-merchant/client_api/v1/configuration"))
+        XCTAssertEqual(payPalUAT?.configURL, URL(string: "https://api.braintreegateway.com:443/merchants/fake-bt-merchant/client_api/v1/configuration"))
         XCTAssertEqual(payPalUAT?.basePayPalURL, URL(string: "https://api.paypal.com"))
-        XCTAssertEqual(payPalUAT?.baseBraintreeURL, URL(string: "https://some-braintree-url.com/merchants/fake-bt-merchant/client_api"))
+        XCTAssertEqual(payPalUAT?.baseBraintreeURL, URL(string: "https://api.braintreegateway.com:443/merchants/fake-bt-merchant/client_api"))
     }
 
     // MARK: - "iss" field properly indicates env

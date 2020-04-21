@@ -42,7 +42,6 @@ NSString * const BTPayPalUATErrorDomain = @"com.braintreepayments.BTPayPalUATErr
         
         _environment = [self environmentType:basePayPalURL];
 
-        // TODO: - get the braintree URL from the PP UAT instead of hardcoding; waiting for PP UAT to include BT endpoint
         switch(_environment){
             case BTPayPalUATEnvironmentProd:
                 braintreeGatewayURL = @"https://api.braintreegateway.com:443";
