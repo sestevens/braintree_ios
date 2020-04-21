@@ -50,7 +50,7 @@ NSString * const BTPayPalUATErrorDomain = @"com.braintreepayments.BTPayPalUATErr
             case BTPayPalUATEnvironmentStage:
                 braintreeGatewayURL = @"https://api.sandbox.braintreegateway.com:443";
                 break;
-            case BTPayPalUATEnvironmentUnknown :
+            case BTPayPalUATEnvironmentUnknown:
                 if (error) {
                     *error = [NSError errorWithDomain:BTPayPalUATErrorDomain
                                                  code:BTPayPalUATErrorInvalid
