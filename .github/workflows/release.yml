@@ -18,9 +18,19 @@ jobs:
         run: pod install
       - name: Update version
         run: |
+          sed -i '' 's/## unreleased.*/## '"${{ github.events.inputs.version }}"'/' CHANGELOG.md
           sed -i '' 's/\(s\.version *= *\).*/\1"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
           sed -i '' 's/\(#define BRAINTREE_VERSION (@\).*/\1"'"${{ github.event.inputs.version }}"'\")/' Sources/BraintreeCore/Braintree-Version.h
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Sources/BraintreeCore/Info.plist'
-      - name: Show diff
-        run: git diff
+          git commit -m 'Bump version to ${{ github.event.inputs.version }}' && git push
+      - name: Tag release
+        run: git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}' && git push
+      - name: Create Carthage binaries
+        run: |
+          rm -rf SampleApps/SPMTest
+          carthage build --no-skip-current
+          carthage archive "BraintreeAmericanExpress" "BraintreeApplePay" "BraintreeCard" "BraintreeCore" "BraintreeDataCollector" "BraintreePaymentFlow" "BraintreePayPal" "BraintreeThreeDSecure" "BraintreeUnionPay" "BraintreeVenmo" "PayPalDataCollector" --output Braintree.framework.zip
+          git checkout SampleApps/SPMTest
+      - name: Create GitHub release
+        run: gh release create ${{ github.event.inputs.version }} Braintree.framework.zip -t ${{ github.event.inputs.version }} # -n #{changelog_entries}'
