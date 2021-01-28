@@ -19,7 +19,8 @@ jobs:
       - name: Update version
         run: |
           today=$(date +'%Y-%m-%d')
-          sed -i '' 's/## unreleased.*/## '"${{ github.events.inputs.version }}"' ('"$today"')/' CHANGELOG.md
+          # TODO - investigate why this isn't adding the new version to the changelog correctly
+          sed -i '' 's/## unreleased.*/## "'"${{ github.events.inputs.version }}"'\" ('"$today"')/' CHANGELOG.md
           sed -i '' 's/\(s\.version *= *\).*/\1"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
           sed -i '' 's/\(#define BRAINTREE_VERSION (@\).*/\1"'"${{ github.event.inputs.version }}"'\")/' Sources/BraintreeCore/Braintree-Version.h
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
@@ -72,3 +73,6 @@ jobs:
           asset_path: Braintree.framework.zip
           asset_name: Braintree.framework.zip
           asset_content_type: application/zip
+
+      # TODO: - publish to CocoaPods
+      # TODO: - publish reference docs
