@@ -16,7 +16,11 @@ jobs:
         run: sudo xcode-select -switch /Applications/Xcode_12.3.app
       - name: Install CocoaPod dependencies
         run: pod install
-      - name: Update version in podspec
-        run: sed -i '' 's/\(s\.version *= *\).*/\1"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
+      - name: Update version
+        run: |
+          sed -i '' 's/\(s\.version *= *\).*/\1"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
+          sed -i '' 's/\(#define BRAINTREE_VERSION (@\).*/\1"'"${{ github.event.inputs.version }}"'\")/' Sources/BraintreeCore/Braintree-Version.h
+          plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
+          plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Sources/BraintreeCore/Info.plist'
       - name: Show diff
         run: git diff
