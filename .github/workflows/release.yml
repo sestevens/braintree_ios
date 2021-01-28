@@ -32,11 +32,33 @@ jobs:
           git commit -m 'Bump version to ${{ github.event.inputs.version }}'
           git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}'
           git push origin HEAD:master
+      - name: Extract changelog entries
+        run: |
+          sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: changelog_entries.md
+          draft: false
+          prerelease: false
       - name: Create Carthage binaries
         run: |
           rm -rf SampleApps/SPMTest
           carthage build --no-skip-current
           carthage archive "BraintreeAmericanExpress" "BraintreeApplePay" "BraintreeCard" "BraintreeCore" "BraintreeDataCollector" "BraintreePaymentFlow" "BraintreePayPal" "BraintreeThreeDSecure" "BraintreeUnionPay" "BraintreeVenmo" "PayPalDataCollector" --output Braintree.framework.zip
           git checkout SampleApps/SPMTest
-      - name: Create GitHub release
-        run: gh release create ${{ github.event.inputs.version }} Braintree.framework.zip -t ${{ github.event.inputs.version }} # -n #{changelog_entries}'
+      - name: Upload Carthage binaries
+          id: upload-carthage-binaries
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Braintree.framework.zip
+          asset_name: Braintree.framework.zip
+          asset_content_type: application/zip
