@@ -17,6 +17,6 @@ jobs:
       - name: Install CocoaPod dependencies
         run: pod install
       - name: Update version in podspec
-        run: sed -i '' 's/s\.version = .*/s\.version = \"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
+        run: sed -i '' 's/\(s\.version *= *\).*/\1"'"${{ github.event.inputs.version }}"'\"/' Braintree.podspec
       - name: Show diff
         run: git diff
