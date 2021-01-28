@@ -25,9 +25,12 @@ jobs:
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Sources/BraintreeCore/Info.plist'
           git add .
-          git commit -m 'Bump version to ${{ github.event.inputs.version }}' && git push
+          git commit -m 'Bump version to ${{ github.event.inputs.version }}'
+          git push origin HEAD:master
       - name: Tag release
-        run: git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}' && git push
+        run: |
+          git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}'
+          git push origin HEAD:master
       - name: Create Carthage binaries
         run: |
           rm -rf SampleApps/SPMTest
