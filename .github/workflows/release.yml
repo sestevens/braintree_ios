@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Use Xcode 12.3
         run: sudo xcode-select -switch /Applications/Xcode_12.3.app
-      # - name: Install CocoaPod dependencies
-      #   run: pod install
+
+      # Update the version number
       - name: Update version
         run: |
           today=$(date +'%Y-%m-%d')
@@ -24,6 +24,8 @@ jobs:
           sed -i '' 's/\(#define BRAINTREE_VERSION (@\).*/\1"'"${{ github.event.inputs.version }}"'\")/' Sources/BraintreeCore/Braintree-Version.h
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Sources/BraintreeCore/Info.plist'
+
+      # Tag the new version and push changes
       - name: Tag and push new version
         run: |
           git config user.name github-actions
@@ -32,9 +34,13 @@ jobs:
           git commit -m 'Bump version to ${{ github.event.inputs.version }}'
           git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}'
           git push origin HEAD:master
+
+      # Save changelog entries to a file
       - name: Extract changelog entries
         run: |
           sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
+
+      # Create the release on GitHub
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -46,13 +52,17 @@ jobs:
           body_path: changelog_entries.md
           draft: false
           prerelease: false
+
+      # Create pre-built binaries for Carthage
       - name: Create Carthage binaries
         run: |
           rm -rf SampleApps/SPMTest
           carthage build --no-skip-current
           carthage archive "BraintreeAmericanExpress" "BraintreeApplePay" "BraintreeCard" "BraintreeCore" "BraintreeDataCollector" "BraintreePaymentFlow" "BraintreePayPal" "BraintreeThreeDSecure" "BraintreeUnionPay" "BraintreeVenmo" "PayPalDataCollector" --output Braintree.framework.zip
           git checkout SampleApps/SPMTest
-      - name: Upload Release Asset
+
+      # Add binaries to the GitHub release
+      - name: Upload Carthage binaries
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
