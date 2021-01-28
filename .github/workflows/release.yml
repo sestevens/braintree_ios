@@ -25,6 +25,7 @@ jobs:
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Demo/Application/Supporting Files/Braintree-Demo-Info.plist'
           plutil -replace CFBundleVersion -string ${{ github.event.inputs.version }} -- 'Sources/BraintreeCore/Info.plist'
       - name: Tag and push new version
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
