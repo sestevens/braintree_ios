@@ -1,6 +1,6 @@
 # Braintree iOS SDK Release Notes
 
-## unrelease
+## unreleased
 * Another test
 
 ##  (2021-01-28)
