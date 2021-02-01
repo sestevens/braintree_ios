@@ -28,12 +28,12 @@ jobs:
       # Tag the new version and push changes
       - name: Tag and push new version
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name braintreeps
+          git config user.email code@getbraintree.com
           git add .
           git commit -m 'Bump version to ${{ github.event.inputs.version }}'
           git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}'
-          git push origin HEAD:master
+          git push
 
       # Save changelog entries to a file
       - name: Extract changelog entries
@@ -81,3 +81,5 @@ jobs:
         # pod trunk push Braintree.podspec
 
       # TODO: - publish reference docs
+      # TODO: - push to internal repo
+      # TODO: - fail if unreleased section in CHANGELOG isn't found (& make case insensitive?)
